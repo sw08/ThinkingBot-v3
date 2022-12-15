@@ -13,7 +13,8 @@ class Math(commands.Cog):
         self.bot = bot
 
     @commands.slash_command(name="미분", description="미지수가 1개인 f(x)를 미분")
-    @commands.max_concurrency(1, commands.BucketType.default, wait=True)
+    @commands.max_concurrency(3, commands.BucketType.default)
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def derivative(
         self,
         ctx,
