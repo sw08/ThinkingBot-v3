@@ -18,7 +18,7 @@ class Math(commands.Cog):
     async def derivative(
         self,
         ctx,
-        coefficients: str,
+        coefficients: Option(str, "f(x)", name='함수', required=True),
         x: Option(int, "미분계수를 구할 경우만 입력", name="x", default=None),
     ):
         try:
