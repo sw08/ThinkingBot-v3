@@ -80,26 +80,30 @@ class Core(commands.Cog):
 
     @info.command(name="봇", description="ThinkingBot 정보 조회")
     async def info_thinkingbot(self, ctx):
-        embed = discord.Embed(title="ThinkingBot 정보", description=f'[지원]({config.BOT.support_link})', color=embedcolor)
+        embed = discord.Embed(
+            title="ThinkingBot 정보",
+            description=f"[지원]({config.BOT.support_link})",
+            color=embedcolor,
+        )
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         embed.add_field(
             name="생성일",
             value=f'{self.bot.user.created_at.strftime("%Y/%m/%d")} (<t:{round(self.bot.user.created_at.timestamp())}:R>)',
-            inline=False
+            inline=False,
         )
-        embed.add_field(
-            name='제작자',
-            value='<@1015942852582326292>',
-            inline=False
-        )
-        embed.add_field(name='서버수', value=f'{len(self.bot.guilds)}', inline=False)
-        embed.add_field(name='핑', value='측정중', inline=False)
+        embed.add_field(name="제작자", value="<@1015942852582326292>", inline=False)
+        embed.add_field(name="서버수", value=f"{len(self.bot.guilds)}", inline=False)
+        embed.add_field(name="핑", value="측정중", inline=False)
         before = datetime.now()
         inter = await ctx.respond(embed=embed)
         after = datetime.now()
         embed.remove_field(len(embed.fields) - 1)
         ping = after - before
-        embed.add_field(name='핑', value=f'{round(ping.seconds * 1000 + ping.microseconds / 1000)}ms', inline=False)
+        embed.add_field(
+            name="핑",
+            value=f"{round(ping.seconds * 1000 + ping.microseconds / 1000)}ms",
+            inline=False,
+        )
         await inter.edit_original_response(embed=embed)
 
 

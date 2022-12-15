@@ -15,4 +15,4 @@ class BOT:
     embedcolor = 0x00FFFF
     warncolor = 0xFFFF00
     errorcolor = 0xFF0000
-    support_link = ''
+    support_link = ""
