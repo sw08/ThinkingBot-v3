@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import utils
 import config
 
 warncolor = config.BOT.warncolor
@@ -45,13 +46,14 @@ class Listener(commands.Cog):
             if config.BOT.debug_mode
             else config.BOT.log_channel
         ).send(embed=embed)
-        embed = discord.Embed(
-            title="❌ 명령어 실행 불가",
-            description="예기치 않은 문제로 인해 명령어 실행이 불가능합니다.\n아래 ID와 스크린샷, 사용한 명령어 등을 캡처해 보내주시면 오류 해결에 큰 도움이 됩니다.",
-            color=errorcolor,
-        )
-        embed.add_field(name="에러 ID", value=str(message.id))
-        await ctx.respond(embed=embed)
+        if not isinstance(error, utils.ReportError):
+            embed = discord.Embed(
+                title="❌ 명령어 실행 불가",
+                description="예기치 않은 문제로 인해 명령어 실행이 불가능합니다.\n아래 ID와 스크린샷, 사용한 명령어 등을 캡처해 보내주시면 오류 해결에 큰 도움이 됩니다.",
+                color=errorcolor,
+            )
+            embed.add_field(name="에러 ID", value=str(message.id))
+            await ctx.respond(embed=embed)
 
 
 def setup(bot):
