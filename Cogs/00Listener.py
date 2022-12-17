@@ -75,6 +75,22 @@ class Listener(commands.Cog):
             )
             embed.add_field(name="에러 ID", value=str(message.id))
             await ctx.respond(embed=embed)
+    
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        embed = discord.Embed(title="서버 참여", color=embedcolor)
+        embed.add_field(name="서버 정보", value=f"{guild.name} ({guild.id})")
+        embed.set_thumbnail(url=guild.icon_url)
+        embed.set_footer(icon_url=guild.owner.avatar_url, text=f"{guild.owner}")
+        await (self.bot.get_channel(config.BOT.log_channel)).send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_guild_remove(self, guild):
+        embed = discord.Embed(title="서버 퇴장", color=embedcolor)
+        embed.add_field(name="서버 정보", value=f"{guild.name} ({guild.id})")
+        embed.set_thumbnail(url=guild.icon_url)
+        embed.set_footer(icon_url=guild.owner.avatar_url, text=f"{guild.owner}")
+        await (self.bot.get_channel(config.BOT.log_channel)).send(embed=embed)
 
 
 def setup(bot):
