@@ -40,6 +40,8 @@ class Math(commands.Cog):
                     description="항은 20개 이상 입력 불가합니다",
                     color=warncolor,
                 )
+                await ctx.respond(embed=embed)
+                return
             f_prime_x = []
             for i in expression.terms:
                 temp = i
