@@ -14,7 +14,7 @@ class Math(commands.Cog):
         self.bot = bot
 
     @commands.slash_command(name="미분", description="미지수가 1개인 f(x)를 미분")
-    @commands.max_concurrency(3, commands.BucketType.default)
+    @commands.max_concurrency(3)
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def derivative(
         self,
@@ -66,7 +66,7 @@ class Math(commands.Cog):
             raise errors.WrongExpression
     
     @commands.slash_command(name="적분", description="미지수가 1개인 f(x)를 적분")
-    @commands.max_concurrency(3, commands.BucketType.default)
+    @commands.max_concurrency(3)
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def integral(
         self,
@@ -118,6 +118,7 @@ class Math(commands.Cog):
             await ctx.respond(embed=embed)
         except Exception as e:
             raise errors.WrongExpression
+    
 
 def setup(bot):
     bot.add_cog(Math(bot))
