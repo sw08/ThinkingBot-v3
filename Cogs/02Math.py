@@ -119,6 +119,20 @@ class Math(commands.Cog):
         except Exception as e:
             raise errors.WrongExpression
     
+    fraction = SlashCommandGroup('분수', '분수 계산 관련 명령어들')
+
+    @fraction.command(name='약분', description='분수 약분')
+    @commands.max_concurrency(3)
+    @commands.cooldown(1, 15, commands.BucketType.user)
+    async def fraction_simplify(self, fraction):
+        try:
+            s_fraction = utils.math.Fraction(fraction)
+            embed = discord.Embed(title='약분 결과', color=embedcolor)
+            embed.add_field(name='약분 전', value=fraction, inline=False)
+            embed.add_field(name='약분 후', value=str(s_fraction), inline=False)
+            await ctx.respond(embed=embed)
+        except:
+            raise errors.WrongExpression
 
 def setup(bot):
     bot.add_cog(Math(bot))
