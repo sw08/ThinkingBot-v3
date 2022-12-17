@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 from discord.commands import Option
 import config
-import utils
+import utils.math
+import utils.errors as errors
 
 embedcolor = config.BOT.embedcolor
 warncolor = config.BOT.warncolor
@@ -18,29 +19,13 @@ class Math(commands.Cog):
     async def derivative(
         self,
         ctx,
-        coefficients: Option(str, "f(x)", name='함수', required=True),
+        expression: Option(str, "f(x)", name="함수", required=True),
         x: Option(int, "미분계수를 구할 경우만 입력", name="x", default=None),
     ):
         try:
-            f_x = coefficients
-            if coefficients[0] == "x":
-                coefficients = "1" + coefficients
-            coefficients = sorted(
-                [
-                    [int(j[1:] if j[0] == "^" else j) for j in i.split("x") if "x" in i]
-                    for i in coefficients.replace(" ", "")
-                    .replace("-", "+-")
-                    .replace("+x", "+1x")
-                    .replace("-x", "-1x")
-                    .replace("x+", "x^1+")
-                    .split("+")
-                ],
-                key=lambda i: 0 if len(i) != 2 else i[1],
-                reverse=True,
-            )
-            if coefficients[-1] == []:
-                del coefficients[-1]
-            if coefficients[-1][1] > 10:
+            f_x = expression
+            expression = utils.math.Expression(expression)
+            if expression.terms[0].degree > 10:
                 if x is not None:
                     embed = discord.Embed(
                         title="⚠️ 명령어 사용 제한",
@@ -49,49 +34,34 @@ class Math(commands.Cog):
                     )
                     await ctx.respond(embed=embed)
                     return
-            if len(coefficients) > 20:
+            if len(expression.terms) > 20:
                 embed = discord.Embed(
                     title="⚠️ 명령어 사용 제한",
                     description="항은 20개 이상 입력 불가합니다",
                     color=warncolor,
                 )
-            data = []
-            for i in coefficients:
-                data.append([i[0] * i[1], i[1] - 1])
-            f_prime_x = (
-                " + ".join(
-                    sorted(
-                        [f"{i[0]}x^{i[1]}" for i in data],
-                        key=lambda i: i[1] if len(i) == 2 else 0,
-                    )
-                )
-                .replace("+ -", "-")
-                .replace("1x", "x")
-                .replace("^1", "")
-                .replace("x^0", "")
-            )
+            f_prime_x = []
+            for i in expression.terms:
+                temp = i
+                if temp.degree == 0:
+                    continue
+                temp.coefficient *= temp.degree
+                temp.degree -= 1
+                f_prime_x.append(temp)
+            f_prime_x = utils.math.Expression.from_terms(f_prime_x)
             embed = discord.Embed(title="미분 결과", color=embedcolor)
             embed.add_field(name="f(x)", value=f_x, inline=False)
             embed.add_field(
                 name="f`(x)",
-                value=f_prime_x[1:] if f_prime_x[0] == "+" else f_prime_x,
+                value=str(f_prime_x),
                 inline=False,
             )
             if x is not None:
-                result = 0
-                for i in data:
-                    result += i[0] * (x ** i[1])
+                result = f_prime_x.substitute(x)
                 embed.add_field(name=f"f`({x})", value=str(result), inline=False)
             await ctx.respond(embed=embed)
         except Exception as e:
-            embed = discord.Embed(title="수식 입력 방법", color=warncolor)
-            embed.add_field(name="미지수 사용", value="> 미지수는 x 1개만 사용 가능합니다", inline=False)
-            embed.add_field(
-                name="거듭제곱 표현", value="> 거듭제곱은 ^ 뒤에 제곱할 숫자를 입력하셔야 합니다", inline=False
-            )
-            await ctx.respond(embed=embed)
-            print(e)
-            raise utils.ReportError
+            raise errors.WrongExpression
 
 
 def setup(bot):

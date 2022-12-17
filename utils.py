@@ -1,2 +1,0 @@
-class ReportError(Exception):
-    pass
