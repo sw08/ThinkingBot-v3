@@ -50,8 +50,8 @@ class Expression:
 class Term:
     def __init__(self, term):
         if "x" in term:
-            if term[-1] == 'x':
-                term += '^1'
+            if term[-1] == "x":
+                term += "^1"
             splitted = term.split("x^")
             self.degree = int(splitted[1])
             self.coefficient = Fraction(splitted[0])

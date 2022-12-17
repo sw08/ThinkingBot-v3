@@ -75,7 +75,7 @@ class Listener(commands.Cog):
             )
             embed.add_field(name="에러 ID", value=str(message.id))
             await ctx.respond(embed=embed)
-    
+
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         embed = discord.Embed(title="서버 참여", color=embedcolor)
