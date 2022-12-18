@@ -98,7 +98,7 @@ class Math(commands.Cog):
         self,
         ctx,
         expression: Option(str, "f(x)", name="함수", required=True),
-        a: Option(int, "f(a)의 a의 값", name="a", default=None),
+        a: Option(int, "f(a)의 a의 값", name="a", required=True),
     ):
         try:
             f_x = expression
