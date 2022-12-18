@@ -120,6 +120,40 @@ class Math(commands.Cog):
             await ctx.respond(embed=embed)
         except Exception as e:
             raise errors.WrongExpression
+    
+    @commands.command(name='함숫값', description='x에 대한 고차함수의 함숫값 계싼')
+    @commands.max_concurrency(3)
+    @commands.cooldown(1, 30, commands.BucketType.user)
+    async def f_x(
+        self,
+        ctx,
+        expression: Option(str, "f(x)", name="함수", required=True),
+        a: Option(int, "f(a)의 a의 값", name="a", default=None),
+    ):
+        try:
+            f_x = expression
+            expression = utils.math.Expression(expression)
+            if expression.terms[0].degree > 10:
+                if section is not None:
+                    embed = discord.Embed(
+                        title="⚠️ 명령어 사용 제한",
+                        description="10차 방정식 이상은 함숫값 계산이 제한되었습니다",
+                        color=warncolor,
+                    )
+                    await ctx.respond(embed=embed)
+                    return
+            if len(expression.terms) > 20:
+                embed = discord.Embed(
+                    title="⚠️ 명령어 사용 제한",
+                    description="항은 20개 이상 입력 불가합니다",
+                    color=warncolor,
+                )
+                await ctx.respond(embed=embed)
+                return
+            embed.add_field(name=f"f({a})", value=f_x.substitute(a), inline=False)
+            await ctx.respond(embed=embed)
+        except Exception as e:
+            raise errors.WrongExpression
 
     fraction = SlashCommandGroup("분수", "분수 계산 관련 명령어들")
 
