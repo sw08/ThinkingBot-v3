@@ -1,6 +1,25 @@
 import re
 import utils.errors as errors
 
+async def check_expression(expression, ctx, value):
+    if value is not None:
+        if expression.terms[0].degree > 10:
+            embed = discord.Embed(
+                title="⚠️ 명령어 사용 제한",
+                description="10차 방정식 이상은 함숫값 계산이 제한되었습니다",
+                color=warncolor,
+            )
+            await ctx.respond(embed=embed)
+            return True
+    elif len(expression.terms) > 20:
+            embed = discord.Embed(
+                title="⚠️ 명령어 사용 제한",
+                description="항은 20개 이상 입력 불가합니다",
+                color=warncolor,
+            )
+            await ctx.respond(embed=embed)
+            return True
+    return False
 
 class Expression:
     def __init__(self, expression):

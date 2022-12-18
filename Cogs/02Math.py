@@ -25,23 +25,8 @@ class Math(commands.Cog):
         try:
             f_x = expression
             expression = utils.math.Expression(expression)
-            if expression.terms[0].degree > 10:
-                if x is not None:
-                    embed = discord.Embed(
-                        title="⚠️ 명령어 사용 제한",
-                        description="10차 방정식 이상은 미분계수 계산이 제한되었습니다",
-                        color=warncolor,
-                    )
-                    await ctx.respond(embed=embed)
-                    return
-            if len(expression.terms) > 20:
-                embed = discord.Embed(
-                    title="⚠️ 명령어 사용 제한",
-                    description="항은 20개 이상 입력 불가합니다",
-                    color=warncolor,
-                )
-                await ctx.respond(embed=embed)
-                return
+            check = await utils.math.check_expression(expression, ctx, x)
+            if check: return
             f_prime_x = []
             for i in expression.terms:
                 temp = i
@@ -81,23 +66,8 @@ class Math(commands.Cog):
                 b = int(splitted[1])
             f_x = expression
             expression = utils.math.Expression(expression)
-            if expression.terms[0].degree > 10:
-                if section is not None:
-                    embed = discord.Embed(
-                        title="⚠️ 명령어 사용 제한",
-                        description="10차 방정식 이상은 정적분 계산이 제한되었습니다",
-                        color=warncolor,
-                    )
-                    await ctx.respond(embed=embed)
-                    return
-            if len(expression.terms) > 20:
-                embed = discord.Embed(
-                    title="⚠️ 명령어 사용 제한",
-                    description="항은 20개 이상 입력 불가합니다",
-                    color=warncolor,
-                )
-                await ctx.respond(embed=embed)
-                return
+            check = await utils.math.check_expression(expression, ctx, section)
+            if check: return
             F_x = []
             for i in expression.terms:
                 temp = i
@@ -133,23 +103,8 @@ class Math(commands.Cog):
         try:
             f_x = expression
             expression = utils.math.Expression(expression)
-            if expression.terms[0].degree > 10:
-                if section is not None:
-                    embed = discord.Embed(
-                        title="⚠️ 명령어 사용 제한",
-                        description="10차 방정식 이상은 함숫값 계산이 제한되었습니다",
-                        color=warncolor,
-                    )
-                    await ctx.respond(embed=embed)
-                    return
-            if len(expression.terms) > 20:
-                embed = discord.Embed(
-                    title="⚠️ 명령어 사용 제한",
-                    description="항은 20개 이상 입력 불가합니다",
-                    color=warncolor,
-                )
-                await ctx.respond(embed=embed)
-                return
+            check = await utils.math.check_expression(expression, ctx, a)
+            if check: return
             embed.add_field(name=f"f({a})", value=f_x.substitute(a), inline=False)
             await ctx.respond(embed=embed)
         except Exception as e:
